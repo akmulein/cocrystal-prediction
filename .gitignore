@@ -13,3 +13,7 @@ __pycache__/
 *.pickle
 
 data/
+
+notebooks/visual.ipynb
+
+src/models/
