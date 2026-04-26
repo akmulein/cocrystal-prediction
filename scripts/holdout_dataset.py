@@ -14,6 +14,7 @@ from src.negative_sampling import (
     ensure_columns,
 )
 from src.final_dataset import is_valid_vector
+from src.utils.composition import annotate_metal_metadata
 
 root = Path(__file__).resolve().parents[1]
 
@@ -55,6 +56,8 @@ def attach_rebuilt_by_formula(df, lookup, formula_col, out_cols):
 def main() -> None:
     df_pos = pd.read_pickle(df_pos_path)
     df_perm = pd.read_pickle(df_perm_path)
+    df_pos = annotate_metal_metadata(df_pos, formula_cols=['formula_1', 'formula_2', 'formula_3'])
+    df_perm = annotate_metal_metadata(df_perm, formula_cols=['formula_1', 'formula_2', 'formula_3'])
 
     xyz_to_xtb = build_xyz_feature_map(
         df_pos,
@@ -165,6 +168,15 @@ def main() -> None:
     df_pos_out['cryst'] = 1
     df_neg['cryst'] = 0
 
+    df_pos_out = annotate_metal_metadata(
+        df_pos_out,
+        formula_cols=['formula_1', 'formula_2', 'formula_3'],
+    )
+    df_neg = annotate_metal_metadata(
+        df_neg,
+        formula_cols=['formula_1', 'formula_2', 'formula_3'],
+    )
+
     final_cols = [
         'source_file',
         'A', 'B', 'G',
@@ -175,6 +187,7 @@ def main() -> None:
         'xtb_concat_3d',
         'xtb_1_rebuilt', 'xtb_2_rebuilt', 'xtb_3_rebuilt',
         'xtb_concat_rebuilt',
+        'has_metal', 'metal_name',
         'cryst',
     ]
 

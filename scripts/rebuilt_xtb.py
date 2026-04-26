@@ -3,6 +3,7 @@ import pandas as pd
 
 from src.features.xtb_features import load_feature_orders, build_row_vectors_from_blocks
 from src.features.smiles_geometry import xtb_block_from_smiles
+from src.utils.composition import annotate_metal_metadata
 
 root = Path(__file__).resolve().parents[1]
 
@@ -63,10 +64,18 @@ def main() -> None:
 
     holdout_df = pd.read_pickle(holdout_input)
     holdout_rebuilt = add_rebuilt_xtb(holdout_df, xtb_dir)
+    holdout_rebuilt = annotate_metal_metadata(
+        holdout_rebuilt,
+        formula_cols=['formula_1', 'formula_2', 'formula_3'],
+    )
     holdout_rebuilt.to_pickle(holdout_out, protocol=4)
 
     sulf_df = pd.read_pickle(sulf_input)
     sulf_rebuilt = add_rebuilt_xtb(sulf_df, xtb_dir)
+    sulf_rebuilt = annotate_metal_metadata(
+        sulf_rebuilt,
+        smiles_cols=['A', 'B', 'G'],
+    )
     sulf_rebuilt.to_pickle(sulf_out, protocol=4)
 
     print(f"holdout shape: {holdout_rebuilt.shape}")

@@ -1,0 +1,136 @@
+order;feature;name;api_or_method;method;units
+1;present;Есть xTB-блок;pipeline flag;pipeline;flag
+2;has_opt;Флаг выполнения оптимизации;pipeline flag;pipeline;flag
+3;energy;Полная энергия;xtb.interface.Results.get_energy / get_orbital_eigenvalues;GFN2-xTB;Eh
+4;natoms;Число неводородных атомов;geometry post-processing;pipeline;count / A
+5;energy_per_atom;Энергия на атом;xtb.interface.Results.get_energy / get_orbital_eigenvalues;GFN2-xTB;Eh
+6;rg;Радиус инерции;geometry post-processing;pipeline;count / A
+7;dipole_norm;Полярность молекулы;xtb.interface.Results.get_dipole;GFN2-xTB;Debye-like xTB output
+8;grad_norm;Удаленность структуры от локального минимума;ase.optimize.BFGS / xtb gradient;ASE BFGS + GFN2-xTB;a.u.
+9;homo;Энергия HOMO;xtb.interface.Results.get_energy / get_orbital_eigenvalues;GFN2-xTB;Eh
+10;lumo;Энергия LUMO;xtb.interface.Results.get_energy / get_orbital_eigenvalues;GFN2-xTB;Eh
+11;gap;HOMO-LUMO gap;xtb.interface.Results.get_energy / get_orbital_eigenvalues;GFN2-xTB;Eh
+12;opt_converged;Флаг успешной геометрической оптимизации;pipeline flag;pipeline;flag
+13;opt_nsteps;Количество шагов оптимизации;ase.optimize.BFGS.run;ASE BFGS + GFN2-xTB;steps
+14;opt_fmax_last;Последнее значение максимальной силы в оптимизации.;ase.optimize.BFGS / xtb gradient;ASE BFGS + GFN2-xTB;a.u.
+15;opt_fmax_thr;Порог fmax, при котором останавливается оптимизация;ase.optimize.BFGS / xtb gradient;ASE BFGS + GFN2-xTB;a.u.
+16;q_n;Количество атомных зарядов;xtb.interface.Results.get_charges;GFN2-xTB;e
+17;q_mean;Среднее значение атомных зарядов;xtb.interface.Results.get_charges;GFN2-xTB;e
+18;q_std;Стандартное отклонение атомных зарядов;xtb.interface.Results.get_charges;GFN2-xTB;e
+19;q_min;Минимальный атомный заряд;xtb.interface.Results.get_charges;GFN2-xTB;e
+20;q_max;Максимальный атомный заряд;xtb.interface.Results.get_charges;GFN2-xTB;e
+21;q_q10;10-й перцентиль распределения атомных зарядов;xtb.interface.Results.get_charges;GFN2-xTB;e
+22;q_q50;медиана распределения атомных зарядов;xtb.interface.Results.get_charges;GFN2-xTB;e
+23;q_q90;90-й перцентиль распределения атомных зарядов;xtb.interface.Results.get_charges;GFN2-xTB;e
+24;q_l1;Сумма модулей атомных зарядов;xtb.interface.Results.get_charges;GFN2-xTB;e
+25;q_l2;Евклидова норма вектора атомных зарядов;xtb.interface.Results.get_charges;GFN2-xTB;e
+26;q_frac_gt_0.05;Доля атомов с зарядом > 0.05 e;xtb.interface.Results.get_charges;GFN2-xTB;e
+27;q_frac_lt_-0.05;Доля атомов с зарядом < -0.05 e;xtb.interface.Results.get_charges;GFN2-xTB;e
+28;q_frac_gt_0.1;Доля атомов с зарядом > 0.1 e;xtb.interface.Results.get_charges;GFN2-xTB;e
+29;q_frac_lt_-0.1;Доля атомов с зарядом < -0.1 e;xtb.interface.Results.get_charges;GFN2-xTB;e
+30;q_frac_gt_0.2;Доля атомов с зарядом > 0.2 e;xtb.interface.Results.get_charges;GFN2-xTB;e
+31;q_frac_lt_-0.2;Доля атомов с зарядом < -0.2 e;xtb.interface.Results.get_charges;GFN2-xTB;e
+32;bo_sum;Сумма всех межатомных порядков связей;xtb.interface.Results.get_bond_orders;GFN2-xTB;a.u.
+33;bo_mean;Средний межатомный порядок связи;xtb.interface.Results.get_bond_orders;GFN2-xTB;a.u.
+34;bo_max;Наибольший межатомный порядок связи;xtb.interface.Results.get_bond_orders;GFN2-xTB;a.u.
+35;bo_q25;Нижний квартиль порядков связей;xtb.interface.Results.get_bond_orders;GFN2-xTB;a.u.
+36;bo_q50;Медиана распределения порядков связей;xtb.interface.Results.get_bond_orders;GFN2-xTB;a.u.
+37;bo_q75;Верхний квартиль порядков связей;xtb.interface.Results.get_bond_orders;GFN2-xTB;a.u.
+38;bo_n_pairs;Кол-во пар атомов с порядоком связи >=  0.05;xtb.interface.Results.get_bond_orders;GFN2-xTB;a.u.
+39;bo_sum_thr;Сумма порядков связей (у которых порядок > порога);xtb.interface.Results.get_bond_orders;GFN2-xTB;a.u.
+40;bo_mean_thr;Средний порядок связи (у которых порядок > порога);xtb.interface.Results.get_bond_orders;GFN2-xTB;a.u.
+41;bo_max_thr;Максимальный порядок связи (у которых порядок > порога);xtb.interface.Results.get_bond_orders;GFN2-xTB;a.u.
+42;bo_sum_norm_natoms;Сумма порядков связей, делённая на число атомов;xtb.interface.Results.get_bond_orders;GFN2-xTB;a.u.
+43;frontier_homo-3;Энергия HOMO-3;xtb.interface.Results.get_orbital_eigenvalues;GFN2-xTB;Eh
+44;frontier_homo-2;Энергия HOMO-2;xtb.interface.Results.get_orbital_eigenvalues;GFN2-xTB;Eh
+45;frontier_homo-1;Энергия HOMO-1;xtb.interface.Results.get_orbital_eigenvalues;GFN2-xTB;Eh
+46;frontier_homo+0;Энергия HOMO;xtb.interface.Results.get_orbital_eigenvalues;GFN2-xTB;Eh
+47;frontier_lumo+0;Энергия LUMO;xtb.interface.Results.get_orbital_eigenvalues;GFN2-xTB;Eh
+48;frontier_lumo+1;Энергия LUMO+1;xtb.interface.Results.get_orbital_eigenvalues;GFN2-xTB;Eh
+49;frontier_lumo+2;Энергия LUMO+2;xtb.interface.Results.get_orbital_eigenvalues;GFN2-xTB;Eh
+50;frontier_lumo+3;Энергия LUMO+3;xtb.interface.Results.get_orbital_eigenvalues;GFN2-xTB;Eh
+51;frontier_n;Число орбиталей, доступных для фронтирного окна;xtb.interface.Results.get_orbital_eigenvalues;GFN2-xTB;Eh
+52;eps_occ_n;Количество занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+53;eps_occ_mean;Средняя энергия занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+54;eps_occ_std;Стандартное отклонение энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+55;eps_occ_min;Минимальная энергия занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+56;eps_occ_max;Максимальная энергия занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+57;eps_occ_q10;10-й перцентиль распределения энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+58;eps_occ_q50;медиана распределения энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+59;eps_occ_q90;90-й перцентиль распределения энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+60;eps_occ_l1;Сумма модулей энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+61;eps_occ_l2;Евклидова норма энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+62;eps_vir_n;Количество свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+63;eps_vir_mean;Средняя энергия свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+64;eps_vir_std;Ст. откл. энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+65;eps_vir_min;Минимальная энергия свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+66;eps_vir_max;Максимальная энергия свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+67;eps_vir_q10;10-й перцентиль распределения энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+68;eps_vir_q50;медиана распределения энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+69;eps_vir_q90;90-й перцентиль распределения энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+70;eps_vir_l1;Сумма модулей энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+71;eps_vir_l2;Евклидова норма энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+72;eps_occ_hist_001;1 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+73;eps_occ_hist_002;2 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+74;eps_occ_hist_003;3 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+75;eps_occ_hist_004;4 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+76;eps_occ_hist_005;5 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+77;eps_occ_hist_006;6 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+78;eps_occ_hist_007;7 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+79;eps_occ_hist_008;8 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+80;eps_occ_hist_009;9 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+81;eps_occ_hist_010;10 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+82;eps_occ_hist_011;11 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+83;eps_occ_hist_012;12 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+84;eps_occ_hist_013;13 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+85;eps_occ_hist_014;14 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+86;eps_occ_hist_015;15 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+87;eps_occ_hist_016;16 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+88;eps_occ_hist_017;17 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+89;eps_occ_hist_018;18 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+90;eps_occ_hist_019;19 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+91;eps_occ_hist_020;20 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+92;eps_occ_hist_021;21 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+93;eps_occ_hist_022;22 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+94;eps_occ_hist_023;23 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+95;eps_occ_hist_024;24 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+96;eps_occ_hist_025;25 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+97;eps_occ_hist_026;26 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+98;eps_occ_hist_027;27 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+99;eps_occ_hist_028;28 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+100;eps_occ_hist_029;29 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+101;eps_occ_hist_030;30 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+102;eps_occ_hist_031;31 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+103;eps_occ_hist_032;32 бин гистограмм энергий занятых орбиталей;occupied orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+104;eps_vir_hist_001;1 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+105;eps_vir_hist_002;2 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+106;eps_vir_hist_003;3 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+107;eps_vir_hist_004;4 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+108;eps_vir_hist_005;5 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+109;eps_vir_hist_006;6 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+110;eps_vir_hist_007;7 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+111;eps_vir_hist_008;8 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+112;eps_vir_hist_009;9 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+113;eps_vir_hist_010;10 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+114;eps_vir_hist_011;11 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+115;eps_vir_hist_012;12 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+116;eps_vir_hist_013;13 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+117;eps_vir_hist_014;14 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+118;eps_vir_hist_015;15 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+119;eps_vir_hist_016;16 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+120;eps_vir_hist_017;17 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+121;eps_vir_hist_018;18 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+122;eps_vir_hist_019;19 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+123;eps_vir_hist_020;20 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+124;eps_vir_hist_021;21 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+125;eps_vir_hist_022;22 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+126;eps_vir_hist_023;23 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+127;eps_vir_hist_024;24 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+128;eps_vir_hist_025;25 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+129;eps_vir_hist_026;26 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+130;eps_vir_hist_027;27 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+131;eps_vir_hist_028;28 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+132;eps_vir_hist_029;29 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+133;eps_vir_hist_030;30 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+134;eps_vir_hist_031;31 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived
+135;eps_vir_hist_032;32 бин гистограмм энергий свободных орбиталей;virtual orbital eigenvalues post-processing;GFN2-xTB;Eh / derived

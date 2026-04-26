@@ -2,6 +2,7 @@ from pathlib import Path
 import pandas as pd
 
 from src.final_dataset import make_final_dataset
+from src.utils.composition import annotate_metal_metadata
 
 root = Path(__file__).resolve().parents[1]
 
@@ -21,6 +22,8 @@ batch = 5000
 def main() -> None:
     df_pos = pd.read_pickle(df_pos_path)
     df_perm = pd.read_pickle(df_perm_path)
+    df_pos = annotate_metal_metadata(df_pos, formula_cols=['formula_1', 'formula_2', 'formula_3'])
+    df_perm = annotate_metal_metadata(df_perm, formula_cols=['formula_1', 'formula_2', 'formula_3'])
 
     final_cols = [
         'source_file',
@@ -29,6 +32,7 @@ def main() -> None:
         'formula_3', 'xyz_3_3d',
         'xtb_1_3d', 'xtb_2_3d', 'xtb_3_3d',
         'xtb_concat_3d',
+        'has_metal', 'metal_name',
         'cryst',
     ]
 

@@ -1,18 +1,24 @@
-import os
 import subprocess
+import sys
+from pathlib import Path
+
 import pandas as pd
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 N_WORKERS = 12  
 
-df = pd.read_pickle('df_triple.pkl')
-os.makedirs('xtb_results', exist_ok=True)
+root = Path(__file__).resolve().parents[2]
+dataset_path = root / 'data' / 'raw' / 'triple_pos_raw.pkl'
+output_dir = root / 'data' / 'xtb' / 'xtb_results'
+worker_path = Path(__file__).resolve().parent / 'xtb_worker.py'
+
+df = pd.read_pickle(dataset_path)
+output_dir.mkdir(parents=True, exist_ok=True)
 
 all_sources = df['source_file'].unique().tolist()
 done_files = set(
-    f.replace('.pkl', '')
-    for f in os.listdir('xtb_results')
-    if f.endswith('.pkl')
+    f.stem
+    for f in output_dir.glob('*.pkl')
 )
 todo = [sf for sf in all_sources if sf not in done_files]
 
@@ -26,7 +32,7 @@ print('-' * 40)
 
 def run_one(sf):
     
-    r = subprocess.run(['python', 'xtb_worker.py', sf], check=False)
+    r = subprocess.run([sys.executable, str(worker_path), sf], check=False)
     return sf, r.returncode
 
 with ThreadPoolExecutor(max_workers=N_WORKERS) as ex:

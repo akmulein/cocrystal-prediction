@@ -1,6 +1,7 @@
 from pathlib import Path
 import pandas as pd
 import numpy as np
+from src.utils.composition import annotate_metal_metadata
 
 root = Path(__file__).resolve().parents[1]
 
@@ -67,7 +68,8 @@ def sample_random_triples(
 
 def make_candidates(df: pd.DataFrame, n: int, seed: int) -> pd.DataFrame:
     p1, p2, p3 = build_component_pools(df)
-    return sample_random_triples(p1, p2, p3, n=n, seed=seed)
+    out = sample_random_triples(p1, p2, p3, n=n, seed=seed)
+    return annotate_metal_metadata(out, formula_cols=['formula_1', 'formula_2', 'formula_3'])
 
 def main() -> None:
     intermediate.mkdir(parents=True, exist_ok=True)

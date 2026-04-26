@@ -7,6 +7,7 @@ os.environ['NUMEXPR_NUM_THREADS'] = '1'
 import sys
 import os
 import pickle
+from pathlib import Path
 import numpy as np
 import pandas as pd
 
@@ -203,12 +204,16 @@ def optimize_geometry_ase(numbers, positions_ang, method='GFN2-xTB',
     }
     return atoms.get_positions(), meta  # Å
 
+root = Path(__file__).resolve().parents[2]
+dataset_path = root / 'data' / 'raw' / 'triple_pos_raw.pkl'
+output_dir = root / 'data' / 'xtb' / 'xtb_results'
+
 source_file = sys.argv[1]
 
-df = pd.read_pickle('df_triple.pkl')
+df = pd.read_pickle(dataset_path)
 row = df[df['source_file'] == source_file].iloc[0]
 
-os.makedirs('xtb_results', exist_ok=True)
+output_dir.mkdir(parents=True, exist_ok=True)
 
 out = {'source_file': source_file, 'cryst': 1}
 
@@ -241,5 +246,5 @@ for i in [1, 2, 3]:
         out[key] = None
         out[f'{i}_xtb_error'] = repr(e)
 
-with open(f'xtb_results/{source_file}.pkl', 'wb') as f:
+with (output_dir / f'{source_file}.pkl').open('wb') as f:
     pickle.dump(out, f)

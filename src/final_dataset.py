@@ -7,7 +7,7 @@ from src.negative_sampling import (
     build_xyz_feature_map,
     attach_features_by_xyz,
     keep_rows_with_all_features,
-    drop_positive_triples,
+    drop_positive_combinations,
     prepare_concat_column,
     fit_transform_by_positives,
     max_cosine_to_positive,
@@ -29,8 +29,8 @@ def is_valid_vector(x) -> bool:
 def make_final_dataset(
     df_pos: pd.DataFrame,
     df_perm: pd.DataFrame,
-    xyz_cols: tuple[str, str, str],
-    feature_cols: tuple[str, str, str],
+    xyz_cols: tuple[str, ...],
+    feature_cols: tuple[str, ...],
     concat_col: str,
     final_cols: list[str],
     thresh: float = 0.7,
@@ -52,7 +52,7 @@ def make_final_dataset(
     df_perm = keep_rows_with_all_features(df_perm, feature_cols)
     df_pos = keep_rows_with_all_features(df_pos, feature_cols)
 
-    df_perm = drop_positive_triples(df_perm, df_pos)
+    df_perm = drop_positive_combinations(df_perm, df_pos, xyz_cols=xyz_cols)
 
     df_perm = prepare_concat_column(df_perm, list(feature_cols), concat_col)
     df_pos = prepare_concat_column(df_pos, list(feature_cols), concat_col)

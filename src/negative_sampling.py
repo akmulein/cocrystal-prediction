@@ -7,6 +7,10 @@ def canon3(a, b, c):
     return tuple(sorted((a, b, c)))
 
 
+def canon_components(*components):
+    return tuple(sorted(components))
+
+
 def concat_features(row: pd.Series, cols: list[str]) -> np.ndarray:
     parts = [row[c] for c in cols]
     return np.asarray(sum(parts, []), dtype=np.float32)
@@ -19,8 +23,8 @@ def filter_finite(df: pd.DataFrame, X: np.ndarray) -> tuple[pd.DataFrame, np.nda
 
 def build_xyz_feature_map(
     df: pd.DataFrame,
-    xyz_cols: tuple[str, str, str],
-    feature_cols: tuple[str, str, str],
+    xyz_cols: tuple[str, ...],
+    feature_cols: tuple[str, ...],
 ) -> dict[str, object]:
     xyz_to_feat = {}
 
@@ -43,8 +47,8 @@ def build_xyz_feature_map(
 def attach_features_by_xyz(
     df: pd.DataFrame,
     xyz_to_feat: dict[str, list[float]],
-    xyz_cols: tuple[str, str, str],
-    out_cols: tuple[str, str, str],
+    xyz_cols: tuple[str, ...],
+    out_cols: tuple[str, ...],
 ) -> pd.DataFrame:
     out = df.copy()
 
@@ -56,7 +60,7 @@ def attach_features_by_xyz(
 
 def keep_rows_with_all_features(
     df: pd.DataFrame,
-    feature_cols: tuple[str, str, str],
+    feature_cols: tuple[str, ...],
 ) -> pd.DataFrame:
     mask = df[feature_cols[0]].notnull()
     for col in feature_cols[1:]:
@@ -75,6 +79,22 @@ def drop_positive_triples(
 
     perm_can = df_perm.apply(
         lambda r: canon3(r[xyz_cols[0]], r[xyz_cols[1]], r[xyz_cols[2]]), axis=1
+    )
+
+    return df_perm.loc[~perm_can.isin(pos_set)].reset_index(drop=True)
+
+
+def drop_positive_combinations(
+    df_perm: pd.DataFrame,
+    df_pos: pd.DataFrame,
+    xyz_cols: tuple[str, ...],
+) -> pd.DataFrame:
+    pos_set = set(
+        df_pos.apply(lambda r: canon_components(*(r[col] for col in xyz_cols)), axis=1).to_list()
+    )
+
+    perm_can = df_perm.apply(
+        lambda r: canon_components(*(r[col] for col in xyz_cols)), axis=1
     )
 
     return df_perm.loc[~perm_can.isin(pos_set)].reset_index(drop=True)

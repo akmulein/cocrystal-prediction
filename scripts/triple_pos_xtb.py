@@ -3,6 +3,7 @@ import pandas as pd
 
 from src.features.xtb_features import load_feature_orders
 from src.features.xtb_dataset import load_xtb_rows_from_dir, build_dataset_from_dataframe
+from src.utils.composition import annotate_metal_metadata
 
 root = Path(__file__).resolve().parents[1]
 
@@ -21,14 +22,17 @@ def main() -> None:
 
     df_triple = pd.read_pickle(triple_path)
     df_xtb = load_xtb_rows_from_dir(xtb_dir)
+    raw_meta_cols = ['source_file', 'formula_1', 'formula_2', 'formula_3', 'xyz_1', 'xyz_2', 'xyz_3']
+    raw_meta_cols += [c for c in ['has_metal', 'metal_name'] if c in df_triple.columns]
 
     df = df_xtb.merge(
-        df_triple[
-            ['source_file', 'formula_1', 'formula_2', 'formula_3', 'xyz_1', 'xyz_2', 'xyz_3']
-        ].drop_duplicates('source_file'),
+        df_triple[raw_meta_cols].drop_duplicates('source_file'),
         on='source_file',
         how='left',
     )
+
+    if 'has_metal' not in df.columns or 'metal_name' not in df.columns:
+        df = annotate_metal_metadata(df, formula_cols=['formula_1', 'formula_2', 'formula_3'])
 
     if 'cryst' not in df.columns:
         df['cryst'] = 1
@@ -61,6 +65,7 @@ def main() -> None:
         'xyz_1_3d', 'xyz_2_3d', 'xyz_3_3d',
         'xtb_1_3d', 'xtb_2_3d', 'xtb_3_3d',
         'xtb_concat_3d',
+        'has_metal', 'metal_name',
         'cryst',
     ]
 

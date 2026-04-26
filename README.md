@@ -1,95 +1,129 @@
 # Cocrystal Prediction
 
-В проекте решается задача предсказания химических экспериментов, а именно со-кристаллизации молекул.
+В репозитории собран пайплайн для задачи предсказания со-кристаллизации трёх компонентов. 
 
-Общий пайплайн устроен так:
-- обработка молекул, препроцессинг данных
-- формирование признаков
-- обучение моделей
+**Проект состоит из трёх блоков:**
 
-В текущей версии репозитория представлены два основных подхода: градиентный бустинг и предобученный энкодер UniMol
+1. Парсинг CIF-файлов и сборка сырого датасета
+2. Расчёт квантовохимических признаков (xTB) и подготовка финальных табличных выборок
+3. Обучение и интерпретация моделей 
+    - Градиентный бустинг на квантовохимических признкакх
+    - Нейросетевой подход с использованием энкодера Unimol 
 
-Градиентный бустинг используется как сильный табличный baseline на квантовохимических признаках, а UniMol - как 3D-ориентированная нейросетевая модель. В текущих экспериментах UniMol выглядит более устойчивым к сдвигу домена на внешних наборах.
+Важно:
+- Исходные данные для блоков 1 и 2 в репозиторий не входят, так как они слишком большие
+- Для блока 3 в репозитории есть готовые входные датасеты, поэтому модели можно обучать и анализировать без запуска полного пайплайна
 
----
+**Структура данных:**
+- Обучающий и тестовый датасет получены разделением основной выборки
+- Контрольный датасет - для его систем считаются и сравниваются признаки из 2 видов геометрий
+- Экспериментальный датасет - получен путем лабораторных экспериментов, имеет сильный domain shift, нужен для проверки обобщающей способности моделей
 
-## Repository structure
+**Основная последовательность:**
+- сначала из CIF-файлов извлекаются отдельные молекулы и собирается общий сырой датасет 
+- затем из него выделяются положительные трёхкомпонентные системы 
+- отрицательных примеров в исходных данных нет, поэтому отрицательный класс формируется синтетически из новых комбинаций компонентов
+- после расчёта квантовохимических фичей строится positive-only датасет, разделяется на обший и контрольный
+- для контрольного и экспериментального датасетов дополнительно рассчитываются восстановленные геометрии и признаки на их основе
+- для всех датасетов генерируются негативные примеры (кроме экспериментального, там они настоящие)
+- итоговый основной датасет для моделей сохраняется в `data/final/triple_real_xtb.pkl`
+- итоговый контрольный датасет сохраняется в `data/final/holdout_rebuilt_xtb.pkl`
+- итоговый экспериментальный датасет сохраняется в `data/final/sulf_rebuilt_xtb.pkl`
 
+**Структура репозитория**
 ```text
+data/
+    cif_parsing/         исходные CIF и результаты их парсинга
+    raw/                 raw-датасеты
+    processed/           промежуточные таблицы после xTB
+    intermediate/        кандидаты для negative sampling
+    final/               финальные датасеты для моделей
+    xtb/                 порядки признаков и результаты xTB
+
 notebooks/
-    eda.ipynb                
-    xgb_model.ipynb
-    unimol.ipynb
-    unimol_pool.ipynb
+    eda.ipynb            подготовка raw-данных и отбор трёхкомпонентных систем
+    xgb_model.ipynb      обучение градиентного бустинга
+    xgb_shap.ipynb       SHAP-анализ бустинговой модели
+    unimol.ipynb         дообучение UniMol
+
 
 scripts/
-    triple_pos_xtb.py
-    split_holdout.py
-    neg_candidates.py
-    triple_dataset.py
-    rebuilt_xtb.py
-    holdout_dataset.py
-    xtb/                    
+    parse_cifs.py         парсинг CIF-файлов в parquet по одной структуре
+    csd_raw.py            сборка общего raw-датасета из parsed parquet
+    triple_pos_xtb.py     объединение positive-only троек с рассчитанными xTB
+    split_holdout.py      выделение контрольного датасета из positive-only датасета
+    neg_candidates.py     генерация кандидатов для отрицательного класса
+    triple_dataset.py     сборка основного финального датасета
+    rebuilt_xtb.py        восстановленные геометрии и признаки на их основе для контрольной и экспериментальной выборки
+    holdout_dataset.py    сборка финального контрольного датасета
+    xtb/
+        generate_feature_orders.py  сохранение порядка xTB-признаков
+        run_xtb.py                  последовательный расчёт xTB
+        run_xtb_parallel.py         параллельный расчёт xTB
+        xtb_worker.py               worker для расчёта xTB одной структуры
 
 src/
-    models/
-        unimol_pooling.py
-resources/
-requirements/
+    features/            расчёт и упаковка xTB-признаков
+    models/              модели и обучение
+    utils/               вспомогательные функции для датасетов и химии
 
+resources/               справочные таблицы 
+requirements/            pip-экспорты conda-окружений
 ```
 
-## Окружения
+**Порядок запуска**
 
-В проекте использовались два отдельных окружения:
+Окружения собраны в папке [requirements](requirements)
 
-openbabel_env — для ноутбука notebooks/eda.ipynb
-babel_xtb — для основного пайплайна обработки данных
+Первые два блока в публичной версии репозитория приведён как пример полного пайплайна, сами CIF-файлы и большие промежуточные результаты не публикуются
 
-Окружения для ноутбуков `notebooks/xgb_model.ipynb` и `notebooks/unimol.ipynb` будут добавлены позже.
+## 1. Парсинг CIF-файлов
 
-Зависимости сохранены в папке requirements/:
+`pymatgen_env`
 
+```bash
+python -m scripts.parse_cifs
+python -m scripts.csd_raw
 ```
-requirements/
-    openbabel_env.txt
-    babel_xtb.txt
-```
+`openbabel_env`
 
-# Последовательность выполнения
-## Первичный EDA и сохранение датасета
-```
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements/openbabel_env.txt
-conda activate openbabel_env
-```
-Выполнить:
-notebooks/eda.ipynb
+[notebooks/eda.ipynb](/Users/akmulein/cocrystal-prediction/notebooks/eda.ipynb:1)
 
-## Обработка датасета, подготовка к обучению
-```
-python -m venv venv
-source venv/bin/activate
-pip install -r requirements/babel_xtb.txt
-conda activate babel_xtb
-
-python -m scripts.triple_pos_xtb    #Генерация положительных троек с XTB-признаками
-python -m scripts.split_holdout     # Выдление holdout теста
-python -m scripts.neg_candidates    # Генерация негативных кандидатов
-python -m scripts.triple_dataset    # Построение основного датасета 
-python -m scripts.rebuilt_xtb       # Пересчёт XTB-признаков
-python -m scripts.holdout_dataset   # Подготовка holdout-датасета
+## 2. Расчёт xTB-признаков и подготовка датасетов
+`xtb_env`
+```bash
+conda activate xtb_env
+python -m scripts.xtb.generate_feature_orders
+python -m scripts.xtb.run_xtb_parallel
+python -m scripts.triple_pos_xtb
+python -m scripts.split_holdout
+python -m scripts.rebuilt_xtb
+python -m scripts.neg_candidates
+python -m scripts.triple_dataset
+python -m scripts.holdout_dataset
 ```
 
-## Модели
-В репозитории сейчас есть два ноутбука с моделями:
+## 3. Модели
 
-```text
-notebooks/xgb_model.ipynb
-notebooks/unimol.ipynb
-```
+### Анализ финальных датасетов
+`cocryst_base_env`
 
-`xgb_model.ipynb` - baseline на табличных признаках.
+### Градиентный бустинг
+`cocryst_base_env`
+- [xgb_model.ipynb](/Users/akmulein/cocrystal-prediction/notebooks/xgb_model.ipynb:1)
 
-`unimol.ipynb` показывает нейросетевой подход на 3D-представлениях молекул через UniMol. Этот ноутбук будет упрощён и оптимизирован.
+Обучается baseline-модель на xTB-признаках и оценивается на тестовом, контрольном и экспериментальном датасетах.
+
+### SHAP-анализ бустинговой модели
+`shap_env`
+
+[xgb_shap.ipynb](/Users/akmulein/cocrystal-prediction/notebooks/xgb_shap.ipynb:1)
+
+Рассчитываются SHAP-значения и строятся графики интерпретации модели.
+
+### UniMol
+`unimol_env`
+
+[unimol.ipynb](/Users/akmulein/cocrystal-prediction/notebooks/unimol.ipynb:1)
+
+Обучается двухстадийная UniMol-модель и оценивается на валидационной, тестовой и экспериментальной выборках.

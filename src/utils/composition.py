@@ -104,6 +104,92 @@ def extract_metals_from_formula(formula: str) -> set[str]:
     elements = {el for el, _ in _EL_CNT.findall(clean)}
     return elements & METALS_ALL
 
+
+def extract_metals_from_smiles(smiles: str) -> set[str]:
+    '''
+    Извлекает множество металлов из SMILES.
+    Используется как fallback для датасетов без formula_* колонок.
+    '''
+    if not isinstance(smiles, str) or not smiles.strip():
+        return set()
+
+    try:
+        from rdkit import Chem
+    except ImportError:
+        return set()
+
+    mol = Chem.MolFromSmiles(smiles)
+    if mol is None:
+        return set()
+
+    return {atom.GetSymbol() for atom in mol.GetAtoms() if atom.GetSymbol() in METALS_ALL}
+
+
+def extract_metals_from_row(
+    row: pd.Series,
+    formula_cols: list[str] | None = None,
+    smiles_cols: list[str] | None = None,
+) -> list[str]:
+    '''
+    Возвращает отсортированный список всех металлов, найденных в строке датасета.
+    '''
+    metals = set()
+
+    formula_cols = formula_cols or []
+    smiles_cols = smiles_cols or []
+
+    for col in formula_cols:
+        value = row.get(col)
+        if isinstance(value, str):
+            metals.update(extract_metals_from_formula(value))
+
+    for col in smiles_cols:
+        value = row.get(col)
+        if isinstance(value, str):
+            metals.update(extract_metals_from_smiles(value))
+
+    return sorted(metals)
+
+
+def format_metal_name(metals: list[str]) -> object:
+    '''
+    Превращает список металлов в строку для хранения в колонке metal_name.
+    Для систем с несколькими металлами имена соединяются через ";".
+    '''
+    if not metals:
+        return pd.NA
+    return ';'.join(metals)
+
+
+def annotate_metal_metadata(
+    df: pd.DataFrame,
+    formula_cols: list[str] | None = None,
+    smiles_cols: list[str] | None = None,
+) -> pd.DataFrame:
+    '''
+    Добавляет в датасет колонки has_metal и metal_name.
+    '''
+    out = df.copy()
+
+    if formula_cols is None:
+        formula_cols = [c for c in out.columns if c.startswith('formula_')]
+    if smiles_cols is None:
+        smiles_cols = []
+
+    if not formula_cols and not smiles_cols:
+        return out
+
+    metal_lists = out.apply(
+        extract_metals_from_row,
+        axis=1,
+        formula_cols=formula_cols,
+        smiles_cols=smiles_cols,
+    )
+
+    out['has_metal'] = metal_lists.map(bool)
+    out['metal_name'] = metal_lists.map(format_metal_name)
+    return out
+
 def metal_summary(df: pd.DataFrame) -> pd.DataFrame:
     '''
     Строит сводку по металлам, встречающимся в системах датасета.
